@@ -3,15 +3,21 @@
 import 'package:ecologital_assignment/Screens/Home/Home_View_Model.dart';
 import 'package:ecologital_assignment/Themes/Theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stacked/stacked.dart';
 
-class SearchBox extends ViewModelWidget<HomeViewModel> implements PreferredSizeWidget{
-  const SearchBox({Key? key}) : super(key: key, reactive: false, );
+class SearchBox extends ViewModelWidget<HomeViewModel>
+    implements PreferredSizeWidget {
+  const SearchBox({Key? key})
+      : super(
+          key: key,
+          reactive: false,
+        );
   @override
   Widget build(BuildContext context, HomeViewModel model) {
     return Container(
       color: Themes.keyLight,
-      padding: const EdgeInsets.only(bottom: 16.0,top: 16.0),
+      padding: const EdgeInsets.only(bottom: 16.0, top: 16.0),
       child: Container(
         height: 40,
         margin: const EdgeInsets.only(left: 16, right: 16, top: 16.0),
@@ -21,17 +27,26 @@ class SearchBox extends ViewModelWidget<HomeViewModel> implements PreferredSizeW
         //Search Textbox--------------------------------------------------------
         child: TextField(
           autofocus: true,
-          focusNode: model.searchFocusNode,
+          // focusNode: model.searchFocusNode,
           onTap: () {},
           readOnly: false,
           controller: model.searchControler,
           textAlign: TextAlign.left,
           keyboardType: TextInputType.text,
           decoration: InputDecoration(
-              suffixIcon: Icon(Icons.search, size: 30.0, color: Themes.shadowDark),
+              suffixIcon: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: SvgPicture.asset(
+                  "assets/svg/search.svg",
+                  height: 20.0,
+                  color: Themes.shadowDark,
+                ),
+              ),
               hintText: model.searchBoxHintText,
-              hintStyle:
-                  const TextStyle(fontSize: 14.5, fontWeight: FontWeight.normal, color: Colors.grey),
+              hintStyle: const TextStyle(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.grey),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide: const BorderSide(
@@ -46,7 +61,7 @@ class SearchBox extends ViewModelWidget<HomeViewModel> implements PreferredSizeW
       ),
     );
   }
-  
+
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

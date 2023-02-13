@@ -8,5 +8,7 @@ class HomeViewModel extends BaseViewModel{
   final TextEditingController searchControler = TextEditingController();
   String searchBoxHintText = "Search for foods";
 
-  initialise({required BuildContext context}) {}
+  initialise({required BuildContext context}) {
+
+  }
 }

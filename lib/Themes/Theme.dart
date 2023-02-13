@@ -11,6 +11,8 @@ class Themes{
   static Color shadowDark = HexColor('#D6D6D6');
   static Color shadowLight = HexColor('#F7F7F7');
   static Color shadwoAsh = HexColor('#708090');
+
+  static Color brandColor = HexColor("#fd857e");
 }
 
 class HexColor extends Color {
