@@ -7,7 +7,7 @@ Widget CategoryList(){
   return SizedBox(
     height: 100.0,
     child: ListView.builder(
-      itemCount: 5,
+      itemCount: 3,
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
        physics: const ClampingScrollPhysics(),
