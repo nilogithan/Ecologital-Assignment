@@ -20,7 +20,7 @@ class SearchBox extends ViewModelWidget<HomeViewModel>
       padding: const EdgeInsets.only(bottom: 16.0, top: 16.0),
       child: Container(
         height: 40,
-        margin: const EdgeInsets.only(left: 16, right: 16, top: 16.0),
+        margin: const EdgeInsets.only(top: 8.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
         ),
@@ -38,7 +38,7 @@ class SearchBox extends ViewModelWidget<HomeViewModel>
                 padding: const EdgeInsets.all(2.0),
                 child: SvgPicture.asset(
                   "assets/svg/search.svg",
-                  height: 20.0,
+                  height: 15.0,
                   color: Themes.shadowDark,
                 ),
               ),

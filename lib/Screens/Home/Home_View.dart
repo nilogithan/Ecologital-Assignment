@@ -1,11 +1,13 @@
 // ignore_for_file: file_names, use_key_in_widget_constructors
 
 import 'package:ecologital_assignment/Screens/Home/Home_View_Model.dart';
-import 'package:ecologital_assignment/Screens/Home/Widgets/Category_Cart.dart';
 import 'package:ecologital_assignment/Screens/Home/Widgets/Category_List.dart';
+import 'package:ecologital_assignment/Screens/Home/Widgets/Item_Cart.dart';
+import 'package:ecologital_assignment/Screens/Home/Widgets/Item_List.dart';
 import 'package:ecologital_assignment/Screens/Home/Widgets/Search_Bar.dart';
 import 'package:ecologital_assignment/Themes/Theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stacked/stacked.dart';
 
 class HomeView extends StatelessWidget {
@@ -15,20 +17,63 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
       builder: (context, model, child) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Scaffold(
+        return Scaffold(
+          backgroundColor: Themes.keyLight,
+          appBar: AppBar(
             backgroundColor: Themes.keyLight,
-            appBar: const SearchBox(),
-            body: Column(
-              children: [
-                const SizedBox(
-                  height: 8.0,
+            elevation: 0.0,
+            leading: Icon(
+              Icons.menu,
+              color: Themes.shadwoAsh,
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: SvgPicture.asset(
+                  "assets/svg/shoppingcart.svg",
+                  height: 25.0,
+                  color: Themes.shadwoAsh,
                 ),
-                Expanded(child: CategoryList()),
+              ),
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            child: ListView(
+              children: [
+                const SearchBox(),
+                Column(
+                  children: [
+                    CategoryList(),
+                    const SizedBox(
+                      height: 8.0,
+                    ),
+                  ],
+                ),
+                ListView.separated(
+                  itemCount: 5,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Row(
+                      children: [
+                        InkWell(
+                          onTap: () => model.NavigateToItemView(context),
+                          child: ItemCart(context)),
+                      ],
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(
+                      height: 4.0,
+                    );
+                  },
+                ),
               ],
             ),
           ),
+          resizeToAvoidBottomInset: false,
         );
       },
       viewModelBuilder: () => HomeViewModel(),

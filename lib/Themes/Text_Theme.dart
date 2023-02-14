@@ -21,4 +21,32 @@ class TextThemes{
             color: color,
             decoration: crossText ? TextDecoration.lineThrough : TextDecoration.none));
   }
+
+  static Text boldtitle(text, color, maxLine, {textAlign, fontWeight = bold, bool crossText = false, String fontFamily = ""}) {
+    return Text(text,
+        overflow: TextOverflow.ellipsis,
+        textAlign: textAlign ?? textAlign,
+        maxLines: maxLine,
+        style: TextStyle(
+            //fontFamily: fontFamily != "" ? fontFamily : Themes.brandFont,
+            fontSize: 16,
+            fontWeight: fontWeight,
+            letterSpacing: 0.15,
+            color: color,
+            decoration: crossText ? TextDecoration.lineThrough : TextDecoration.none));
+  }
+
+  static Text H2itle(text, color, maxLine, {textAlign, fontWeight = bold, bool crossText = false, String fontFamily = ""}) {
+    return Text(text,
+        overflow: TextOverflow.ellipsis,
+        textAlign: textAlign ?? textAlign,
+        maxLines: maxLine,
+        style: TextStyle(
+            //fontFamily: fontFamily != "" ? fontFamily : Themes.brandFont,
+            fontSize: 22,
+            fontWeight: fontWeight,
+            letterSpacing: 0.15,
+            color: color,
+            decoration: crossText ? TextDecoration.lineThrough : TextDecoration.none));
+  }
 }

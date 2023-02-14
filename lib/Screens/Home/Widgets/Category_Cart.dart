@@ -18,7 +18,7 @@ Widget CategoryCart(BuildContext context,{String? name, imgUrl}) {
         ),
       ],
       color: Themes.brandColor,
-      borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+      borderRadius: const BorderRadius.all(Radius.circular(20.0)),
     ),
     child: Column(
       children: [
@@ -29,7 +29,7 @@ Widget CategoryCart(BuildContext context,{String? name, imgUrl}) {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextThemes.subtitle("text", Themes.keyLight, 1),
+            TextThemes.subtitle("Main Dish", Themes.keyLight, 1),
           ],
         )
       ],
