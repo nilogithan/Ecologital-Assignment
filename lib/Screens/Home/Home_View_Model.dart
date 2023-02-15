@@ -1,23 +1,43 @@
-// ignore_for_file: file_names, non_constant_identifier_names
+// ignore_for_file: file_names, non_constant_identifier_names, unused_element
 
+import 'package:ecologital_assignment/Models/Cateegory_Model.dart';
+import 'package:ecologital_assignment/Models/Item_Model.dart';
+import 'package:ecologital_assignment/Screens/Home/Home_View_Arguments.dart';
+import 'package:ecologital_assignment/Screens/Item/Item_View_Argument.dart';
 import 'package:ecologital_assignment/Screens/Item/Item_view.dart';
-import 'package:ecologital_assignment/Services/Http_Service.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
-class HomeViewModel extends BaseViewModel{
+class HomeViewModel extends BaseViewModel {
   final FocusNode searchFocusNode = FocusNode();
   final TextEditingController searchControler = TextEditingController();
   String searchBoxHintText = "Search for foods";
+  HoeViewArguments? args;
+  List<CategoryModel> categoryList = [];
+  List<ItemModel>? itemList = [];
+  ScrollController scrollController = ScrollController();
+  bool isLoading = false;
+  
+    // scrollController.addListener() {
+    //   if (scrollController.position.maxScrollExtent ==
+    //       scrollController.position.pixels) {
+    //     if (!isLoading) {
+    //       isLoading = !isLoading;
+    //       // Perform event when user reach at the end of list (e.g. do Api call)
+    //     }
+    //   }}
 
-  String desc = "Duis proident labore aliquip eiusmod proident exercitation nulla esse esse labore consequat consequat. Enim sit minim eiusmod ea consectetur pariatur aute occaecat aute consectetur et ea incididunt laborum. Ullamco proident id est do tempor. Nostrud aute ex officia ipsum exercitation incididunt tempor deserunt ut incididunt aliqua. Aliqua velit duis exercitation deserunt nisi minim voluptate eiusmod aute pariatur culpa qui.";
-
-  initialise({required BuildContext context}) async{
-    var data = await get("/categories");
-    debugPrint(data.toString());
+  initialise({required BuildContext context}) async {
+    args = ModalRoute.of(context)!.settings.arguments as HoeViewArguments;
+    
+    if (args != null) {
+      categoryList = args!.categoryList!;
+      itemList = args!.itemList!;
+    }
   }
 
-  NavigateToItemView(BuildContext context) {
-    Navigator.pushNamed(context, ItemView.routeName);
+  NavigateToItemView(BuildContext context, ItemModel item) {
+    Navigator.pushNamed(context, ItemView.routeName,
+        arguments: ItemViewArgument(item: item));
   }
 }

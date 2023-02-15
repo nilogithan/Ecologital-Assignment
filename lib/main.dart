@@ -1,5 +1,5 @@
 import 'package:ecologital_assignment/Route.dart';
-import 'package:ecologital_assignment/Screens/Home/Home_View.dart';
+import 'package:ecologital_assignment/Screens/Init/Init_View.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       routes: Routes.routes,
-      home:  HomeView(),
+      home:   InitView(),
     );
   }
 }

@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, file_names
 
 import 'package:ecologital_assignment/Screens/Home/Widgets/Item_Cart.dart';
 import 'package:flutter/material.dart';

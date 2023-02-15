@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, non_constant_identifier_names
 
 import 'dart:convert';
 
@@ -14,8 +14,9 @@ getHeader()  {
   return headers;
 }
 
+var BaseUrl = "https://data.mongodb-api.com/app/data-kdspl/endpoint";
+
 post(String url, Map data) async {
-  var BaseUrl = "https://data.mongodb-api.com/app/data-kdspl/endpoint";
   final postUrlWithParam = await http.post(Uri.parse(BaseUrl + url), body: json.encode(data), headers:  getHeader());
   if(postUrlWithParam.statusCode == HttpCodeEnum.Ok.status){
      return postUrlWithParam;
@@ -23,7 +24,6 @@ post(String url, Map data) async {
 }
 
 get(String url) async {
-  var BaseUrl = "https://data.mongodb-api.com/app/data-kdspl/endpoint";
   final getUrlWithParam = await http.get(Uri.parse(BaseUrl + url), headers:  getHeader());
   if(getUrlWithParam.statusCode == HttpCodeEnum.Ok.status){
      return getUrlWithParam.body;

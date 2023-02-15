@@ -3,7 +3,6 @@
 import 'package:ecologital_assignment/Screens/Home/Home_View_Model.dart';
 import 'package:ecologital_assignment/Screens/Home/Widgets/Category_List.dart';
 import 'package:ecologital_assignment/Screens/Home/Widgets/Item_Cart.dart';
-import 'package:ecologital_assignment/Screens/Home/Widgets/Item_List.dart';
 import 'package:ecologital_assignment/Screens/Home/Widgets/Search_Bar.dart';
 import 'package:ecologital_assignment/Themes/Theme.dart';
 import 'package:flutter/material.dart';
@@ -44,14 +43,14 @@ class HomeView extends StatelessWidget {
                 const SearchBox(),
                 Column(
                   children: [
-                    CategoryList(),
+                    CategoryList(model.categoryList),
                     const SizedBox(
                       height: 8.0,
                     ),
                   ],
                 ),
                 ListView.separated(
-                  itemCount: 5,
+                  itemCount: model.itemList!.length,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
@@ -59,8 +58,8 @@ class HomeView extends StatelessWidget {
                     return Row(
                       children: [
                         InkWell(
-                          onTap: () => model.NavigateToItemView(context),
-                          child: ItemCart(context)),
+                          onTap: () => model.NavigateToItemView(context,model.itemList![index]),
+                          child: ItemCart(context,name: model.itemList![index].name,imgUrl: model.itemList![index].image,price: model.itemList![index].price)),
                       ],
                     );
                   },

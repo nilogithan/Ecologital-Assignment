@@ -12,7 +12,11 @@ class InitView extends StatelessWidget{
     return ViewModelBuilder<InitViewModel>.reactive(
      
        builder: ((context, model, child) {
-        return const Scaffold();
+        return const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
        }),
         viewModelBuilder: ()=> InitViewModel(),
         onModelReady: (model) => model.initialise(context:context),

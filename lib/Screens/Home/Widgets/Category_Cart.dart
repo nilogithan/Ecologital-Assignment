@@ -1,11 +1,11 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, file_names
 
 import 'package:ecologital_assignment/Themes/Text_Theme.dart';
 import 'package:ecologital_assignment/Themes/Theme.dart';
 import 'package:flutter/material.dart';
 
 Widget CategoryCart(BuildContext context,{String? name, imgUrl}) {
-  String imgUrl = "https://static.thenounproject.com/png/3735485-200.png";
+  // String imgUrl = "https://static.thenounproject.com/png/3735485-200.png";
   return Container(
     width: MediaQuery.of(context).size.width * 1/3,
     height: MediaQuery.of(context).size.height/9,
@@ -26,10 +26,13 @@ Widget CategoryCart(BuildContext context,{String? name, imgUrl}) {
           imgUrl,
           height: 50.0,
         ),
+        const SizedBox(
+          height: 4.0,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextThemes.subtitle("Main Dish", Themes.keyLight, 1),
+            TextThemes.subtitle(name, Themes.keyLight, 1),
           ],
         )
       ],

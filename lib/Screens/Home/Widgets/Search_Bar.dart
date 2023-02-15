@@ -24,10 +24,9 @@ class SearchBox extends ViewModelWidget<HomeViewModel>
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
         ),
-        //Search Textbox--------------------------------------------------------
         child: TextField(
-          autofocus: true,
-          // focusNode: model.searchFocusNode,
+          // autofocus: true,
+          focusNode: model.searchFocusNode,
           onTap: () {},
           readOnly: false,
           controller: model.searchControler,

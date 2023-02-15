@@ -1,7 +1,8 @@
+// ignore_for_file: file_names, use_key_in_widget_constructors, deprecated_member_use
+
 import 'package:ecologital_assignment/Screens/Item/Item_View_Model.dart';
 import 'package:ecologital_assignment/Themes/Text_Theme.dart';
 import 'package:ecologital_assignment/Themes/Theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -31,7 +32,7 @@ class ItemView extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
                         child: Image.network(
-                          "https://media-cdn.tripadvisor.com/media/photo-s/08/b3/38/cf/pizza-milano.jpg",
+                          model.item!.image,
                           width: MediaQuery.of(context).size.width - 16,
                         ),
                       ),
@@ -45,7 +46,7 @@ class ItemView extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        TextThemes.H2itle("Chicken Pizza", Themes.keyDark, 1),
+                        TextThemes.H2itle(model.item!.name, Themes.keyDark, 1),
                         Row(
                           children: [
                             Icon(
@@ -78,7 +79,7 @@ class ItemView extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        TextThemes.H2itle("Rs 900.00", Themes.keyDark, 1),
+                        TextThemes.H2itle("Rs ${model.item!.price}", Themes.keyDark, 1),
                       ],
                     ),
                   ),
@@ -100,6 +101,7 @@ class ItemView extends StatelessWidget {
             ),
           );
         }),
-        viewModelBuilder: () => ItemViewModel());
+        viewModelBuilder: () => ItemViewModel(),
+        onModelReady: (model)=> model.initialise(context :context),);
   }
 }
