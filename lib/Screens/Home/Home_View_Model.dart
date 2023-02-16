@@ -1,10 +1,12 @@
-// ignore_for_file: file_names, non_constant_identifier_names, unused_element
+// ignore_for_file: file_names, non_constant_identifier_names, unused_element, use_rethrow_when_possible, unnecessary_null_comparison, avoid_single_cascade_in_expression_statements
 
 import 'package:ecologital_assignment/Models/Cateegory_Model.dart';
 import 'package:ecologital_assignment/Models/Item_Model.dart';
 import 'package:ecologital_assignment/Screens/Home/Home_View_Arguments.dart';
+import 'package:ecologital_assignment/Screens/Home/Widgets/Item_Search.dart';
 import 'package:ecologital_assignment/Screens/Item/Item_View_Argument.dart';
 import 'package:ecologital_assignment/Screens/Item/Item_view.dart';
+import 'package:ecologital_assignment/Services/Item_Service.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -15,29 +17,83 @@ class HomeViewModel extends BaseViewModel {
   HoeViewArguments? args;
   List<CategoryModel> categoryList = [];
   List<ItemModel>? itemList = [];
-  ScrollController scrollController = ScrollController();
+  late ScrollController _scrollController;
   bool isLoading = false;
-  
-    // scrollController.addListener() {
-    //   if (scrollController.position.maxScrollExtent ==
-    //       scrollController.position.pixels) {
-    //     if (!isLoading) {
-    //       isLoading = !isLoading;
-    //       // Perform event when user reach at the end of list (e.g. do Api call)
-    //     }
-    //   }}
+  int? selectedCatIndex;
+  List<ItemModel>? backupList = [];
+  bool isCatSelect = false;
+  int flag = 0;
+  bool hasNextPage = true;
+  bool isLoadMore= false;
+  int page = 1;
+
+
+ScrollController get scrollController => _scrollController;
 
   initialise({required BuildContext context}) async {
     args = ModalRoute.of(context)!.settings.arguments as HoeViewArguments;
-    
+     
     if (args != null) {
       categoryList = args!.categoryList!;
       itemList = args!.itemList!;
+      backupList = itemList!;
     }
+     _scrollController = ScrollController();
+
+    _scrollController.addListener(() {
+      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+        // Future.delayed(Duration.zero).then((value) {
+        //    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+           
+        // });
+        loadMore();
+      }
+    });
   }
 
   NavigateToItemView(BuildContext context, ItemModel item) {
     Navigator.pushNamed(context, ItemView.routeName,
         arguments: ItemViewArgument(item: item));
   }
+
+  Search({required BuildContext context}) {
+    showSearch(context: context, delegate: ItemSearch(itemList: itemList!));
+  }
+
+  categorySelect(BuildContext context, int index) {
+    if (selectedCatIndex != null && index == selectedCatIndex && flag == 0) {
+      flag = 1;
+      isCatSelect = false;
+      itemList = backupList;
+    } else {
+      isCatSelect = true;
+      flag = 0;
+      selectedCatIndex = index;
+      List<ItemModel> tempItemList = [];
+      if (backupList!.isEmpty) {
+        backupList = itemList!;
+      }
+      for (int i = 0; i < backupList!.length; i++) {
+        if (backupList![i].categoryId == categoryList[index].id) {
+          tempItemList.add(backupList![i]);
+        }
+      }
+      itemList = tempItemList;
+    }
+
+    notifyListeners();
+  }
+
+  loadMore()async{
+   page += 1;
+      try{
+         var items = await ItemService.getAllItems(page);
+         if(items != null && items.isNotEmpty){
+          itemList!.addAll(items);
+         }  
+      }catch(ex){
+        throw ex;
+      }
+  }
+
 }

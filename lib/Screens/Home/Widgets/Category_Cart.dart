@@ -4,7 +4,7 @@ import 'package:ecologital_assignment/Themes/Text_Theme.dart';
 import 'package:ecologital_assignment/Themes/Theme.dart';
 import 'package:flutter/material.dart';
 
-Widget CategoryCart(BuildContext context,{String? name, imgUrl}) {
+Widget CategoryCart(BuildContext context,{String? name, imgUrl,required bool isSelect}) {
   // String imgUrl = "https://static.thenounproject.com/png/3735485-200.png";
   return Container(
     width: MediaQuery.of(context).size.width * 1/3,
@@ -17,7 +17,7 @@ Widget CategoryCart(BuildContext context,{String? name, imgUrl}) {
           blurRadius: 2.0,
         ),
       ],
-      color: Themes.brandColor,
+      color: isSelect ?  Themes.brandColor : Themes.shadwoAsh,
       borderRadius: const BorderRadius.all(Radius.circular(20.0)),
     ),
     child: Column(
@@ -32,7 +32,7 @@ Widget CategoryCart(BuildContext context,{String? name, imgUrl}) {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextThemes.subtitle(name, Themes.keyLight, 1),
+            TextThemes.subtitle(name, Themes.keyDark, 1),
           ],
         )
       ],

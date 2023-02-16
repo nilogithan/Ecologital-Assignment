@@ -1,7 +1,7 @@
 // ignore_for_file: file_names, use_key_in_widget_constructors
 
 import 'package:ecologital_assignment/Screens/Home/Home_View_Model.dart';
-import 'package:ecologital_assignment/Screens/Home/Widgets/Category_List.dart';
+import 'package:ecologital_assignment/Screens/Home/Widgets/Category_Cart.dart';
 import 'package:ecologital_assignment/Screens/Home/Widgets/Item_Cart.dart';
 import 'package:ecologital_assignment/Screens/Home/Widgets/Search_Bar.dart';
 import 'package:ecologital_assignment/Themes/Theme.dart';
@@ -43,7 +43,31 @@ class HomeView extends StatelessWidget {
                 const SearchBox(),
                 Column(
                   children: [
-                    CategoryList(model.categoryList),
+                    SizedBox(
+                      height: 100.0,
+                      child: ListView.builder(
+                          itemCount: model.categoryList.length,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          physics: const ClampingScrollPhysics(),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Row(
+                              children: [
+                                InkWell(
+                                  onTap: () => model.categorySelect(context,index),
+                                  child: CategoryCart(context,
+                                      name: model.categoryList[index].name,
+                                      imgUrl: model.categoryList[index].image,
+                                      isSelect: model.selectedCatIndex == index && model.isCatSelect),
+                                ),
+                                if (index != model.categoryList.length - 1)
+                                  const SizedBox(
+                                    width: 4.0,
+                                  ),
+                              ],
+                            );
+                          }),
+                    ),
                     const SizedBox(
                       height: 8.0,
                     ),
@@ -54,17 +78,24 @@ class HomeView extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
+                  controller: model.scrollController,
                   itemBuilder: (BuildContext context, int index) {
                     return Row(
                       children: [
                         InkWell(
-                          onTap: () => model.NavigateToItemView(context,model.itemList![index]),
-                          child: ItemCart(context,name: model.itemList![index].name,imgUrl: model.itemList![index].image,price: model.itemList![index].price)),
+                            onTap: () => model.NavigateToItemView(
+                                context, model.itemList![index]),
+                            child: ItemCart(context,
+                                name: model.itemList![index].name,
+                                imgUrl: model.itemList![index].image,
+                                price: model.itemList![index].price)),
                       ],
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(
+                    return model.isLoading ?
+                    const CircularProgressIndicator()
+                    :const SizedBox(
                       height: 4.0,
                     );
                   },

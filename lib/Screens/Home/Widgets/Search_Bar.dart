@@ -27,8 +27,8 @@ class SearchBox extends ViewModelWidget<HomeViewModel>
         child: TextField(
           // autofocus: true,
           focusNode: model.searchFocusNode,
-          onTap: () {},
-          readOnly: false,
+          onTap: () => model.Search(context:context),
+          readOnly: true,
           controller: model.searchControler,
           textAlign: TextAlign.left,
           keyboardType: TextInputType.text,
