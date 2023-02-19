@@ -86,7 +86,7 @@ class BasketItem extends ViewModelWidget<BasketViewModel>{
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextThemes.boldtitle("Rs.${basketModel!.price}", Themes.shadwoAsh, 1),
+                TextThemes.boldtitle("Rs.${basketModel!.basket_unitType!.price != 0? basketModel!.basket_unitType!.price : basketModel!.price}", Themes.shadwoAsh, 1),
               ],
             ),
             const SizedBox(

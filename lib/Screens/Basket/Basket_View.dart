@@ -2,10 +2,14 @@
 
 import 'package:ecologital_assignment/Screens/Basket/Basket_View_Model.dart';
 import 'package:ecologital_assignment/Screens/Basket/Widgets/Basket_Item.dart';
+import 'package:ecologital_assignment/Screens/observables/locator.dart';
+import 'package:ecologital_assignment/Screens/observables/service/Basket_Change_Service.dart';
+import 'package:ecologital_assignment/Screens/observables/service/state/Basket_Change.dart';
 import 'package:ecologital_assignment/Themes/Text_Theme.dart';
 import 'package:ecologital_assignment/Themes/Theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 
 import 'Widgets/Bottom_Button.dart';
@@ -16,76 +20,93 @@ class BasketView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<BasketViewModel>.reactive(
-        viewModelBuilder: (() => BasketViewModel()),
+        viewModelBuilder: () => BasketViewModel(),
         onModelReady: (model) => model.initialise(context: context),
         builder: (context, model, child) {
-          return Scaffold(
-            backgroundColor: Themes.keyLight,
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              backgroundColor: Themes.keyLight,
-              title: TextThemes.H2itle("Basket", Themes.keyDark, 1),
-              centerTitle: true,
-              iconTheme: IconThemeData(
-                color: Themes.shadwoAsh, //change your color here
-              ),
-              elevation: 0.0,
-            ),
-            body: Stack(
-              children: [
-                ListView.separated(
-                  padding: const EdgeInsets.all(8.0),
-                  itemCount: model.basketList!.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right:0.0),
-                      child: Slidable(
-                        key: const ValueKey(0),
-                        endActionPane: ActionPane(
-                          dismissible: DismissiblePane(onDismissed: () {
-                            // we can able to perform to some action here
-                          }),
-                          motion: const DrawerMotion(),
-                          children: [
-                            SlidableAction(
-                              autoClose: true,
-                              flex: 1,
-                              onPressed: (value) {
-                                model.deleteItem(context,index:index);
-                              },
-                              backgroundColor: Colors.red,
-                              foregroundColor: Colors.white,
-                              icon: Icons.delete,
-                              label: 'Delete',
-                            ),
-                            SlidableAction(
-                              autoClose: true,
-                              flex: 1,
-                              onPressed: (value) {
-                                model.editItem(index:index);
-                              },
-                              backgroundColor: Colors.blueAccent,
-                              foregroundColor: Colors.white,
-                              icon: Icons.edit,
-                              label: 'Edit',
-                            ),
-                          ],
-                        ),
-                        child: BasketItem(contextT: context,basketModel: model.basketList![index],)
+          return ChangeNotifierProvider.value(
+              value: getIt<BasketChangeService>().basketChangeNotifier,
+              child: Consumer<BasketChange>(
+                  builder: (context, value, child) {
+                return Scaffold(
+                  backgroundColor: Themes.keyLight,
+                  appBar: AppBar(
+                    // automaticallyImplyLeading: false,
+                    backgroundColor: Themes.keyLight,
+                    title: TextThemes.H2itle("Basket", Themes.keyDark, 1),
+                    centerTitle: true,
+                    iconTheme: IconThemeData(
+                      color: Themes.shadwoAsh, //change your color here
+                    ),
+                    elevation: 0.0,
+                  ),
+                  body: Stack(
+                    children: [
+                      if(value.basketList!.isEmpty)
+                      Center(child: TextThemes.boldtitle("Your basket is empty", Themes.keyDark, 2)),
+                      ListView.separated(
+                        padding: const EdgeInsets.all(8.0),
+                        itemCount: value.basketList!.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 0.0),
+                            child: Slidable(
+                                key: const ValueKey(0),
+                                endActionPane: ActionPane(
+                                  // dismissible: DismissiblePane(onDismissed: () {
+                                  //   // we can able to perform to some action here
+                                  // }),
+                                  motion: const DrawerMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      autoClose: true,
+                                      flex: 1,
+                                      onPressed: (value) {
+                                        model.deleteItem(context, index: index);
+                                      },
+                                      backgroundColor: Colors.red,
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.delete,
+                                      label: 'Delete',
+                                    ),
+                                    SlidableAction(
+                                      autoClose: true,
+                                      flex: 1,
+                                      onPressed: (value) {
+                                        model.editItem(context,index: index);
+                                      },
+                                      backgroundColor: Colors.blueAccent,
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.edit,
+                                      label: 'Edit',
+                                    ),
+                                  ],
+                                ),
+                                child: BasketItem(
+                                  contextT: context,
+                                  basketModel: value.basketList![index],
+                                )),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const SizedBox(
+                            height: 4.0,
+                          );
+                        },
                       ),
-                    );
-                  }, separatorBuilder: (BuildContext context, int index) { 
-                    return const SizedBox(
-                      height: 4.0,
-                    );
-                   },
-                ),
-                model.isLoading ? Center(child: CircularProgressIndicator(color: Themes.brandColor,))
-                : const SizedBox.shrink()
-              ],
-            ),
-            bottomNavigationBar: BasketBottomButton(contextT: context,subTotal: model.total,),
-          );
+                      model.isLoading
+                          ? Center(
+                              child: CircularProgressIndicator(
+                              color: Themes.brandColor,
+                            ))
+                          : const SizedBox.shrink()
+                    ],
+                  ),
+                  bottomNavigationBar: BasketBottomButton(
+                    contextT: context,
+                    subTotal: model.total,
+                  ),
+                );
+              }));
         });
   }
 }

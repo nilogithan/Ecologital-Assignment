@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, file_names
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecologital_assignment/Themes/Text_Theme.dart';
 import 'package:ecologital_assignment/Themes/Theme.dart';
 import 'package:flutter/material.dart';
@@ -29,10 +30,26 @@ Widget ItemCart(BuildContext context, {String? name, String? imgUrl,int? price})
               flex: 1,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: Image.network(
-                  imgUrl!,
-                  height: 50.0,
-                ),
+                child: CachedNetworkImage(
+          imageUrl: imgUrl!,
+          // fit: BoxFit.cover,
+          height: 50.0,
+          placeholder: (context, url) => Center(
+            child: Image.asset(
+              "assets/png/placeholder.png",
+              fit: BoxFit.cover,
+              color:Themes.shadwoAsh,
+            ),
+          ),
+          errorWidget: (context, url, error) => Center(
+            child: Image.asset(
+              "assets/png/placeholder.png",
+              fit: BoxFit.cover,
+              color:Themes.shadwoAsh,
+            ),
+          ),
+        ),
+               
               ),
             ),
             const SizedBox(

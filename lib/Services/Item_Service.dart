@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 class ItemService {
   static Future<List<ItemModel>> getAllItems(int? pageNo,
-      {String categoryId = ""}) async {
+      {String? categoryId = ""}) async {
     try {
       String url =
           "/items${pageNo != null ? "?page=$pageNo" : ""}${categoryId != "" ? "&category_id=$categoryId" : ""}";

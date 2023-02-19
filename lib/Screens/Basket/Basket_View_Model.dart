@@ -5,6 +5,10 @@ import 'dart:convert';
 import 'package:ecologital_assignment/Models/BasketModel.dart';
 import 'package:ecologital_assignment/Models/Place_Order_Model.dart';
 import 'package:ecologital_assignment/Screens/Basket/Basket_View_Argument.dart';
+import 'package:ecologital_assignment/Screens/Item/Item_View_Argument.dart';
+import 'package:ecologital_assignment/Screens/Item/Item_view.dart';
+import 'package:ecologital_assignment/Screens/observables/locator.dart';
+import 'package:ecologital_assignment/Screens/observables/service/Basket_Change_Service.dart';
 import 'package:ecologital_assignment/Services/Basket_Service.dart';
 import 'package:ecologital_assignment/Themes/Text_Theme.dart';
 import 'package:ecologital_assignment/Themes/Theme.dart';
@@ -19,22 +23,25 @@ class BasketViewModel extends BaseViewModel {
   bool isFromHome = false;
   List<BasketModel>? basketList;
   late PlaceOrderModel placeOrderModel;
-  bool isLoading= false;
+  bool isLoading = false;
 
   initialise({required BuildContext context}) async {
     args = ModalRoute.of(context)!.settings.arguments as BasketViewArgument;
+    if (getIt<BasketChangeService>().basketChangeNotifier.basketList != null &&
+        getIt<BasketChangeService>()
+            .basketChangeNotifier
+            .basketList!
+            .isNotEmpty) {
+      basketList = getIt<BasketChangeService>().basketChangeNotifier.basketList;
+    }
     if (args != null) {
       basketList = args!.basketModel;
       isFromHome = args!.isFromHome;
     } else {
       getBasketFromStorage();
     }
-    for (var item in basketList!) {
-      if (item.basket_unitType != null && item.basket_unitType!.price > 0) {
-        total += item.basket_unitType!.price * item.quantity;
-      } else {
-        total += item.price * item.quantity;
-      }
+    if (basketList != null && basketList!.isNotEmpty) {
+      total = calculateTotal();
     }
   }
 
@@ -59,6 +66,8 @@ class BasketViewModel extends BaseViewModel {
     placeOrderModel = data;
     int count = 0;
     isLoading = false;
+    getIt<BasketChangeService>().basketChangeNotifier.basketList = [];
+    removeBasketFromStorage();
     notifyListeners();
 
     if (placeOrderModel.status) {
@@ -73,8 +82,11 @@ class BasketViewModel extends BaseViewModel {
               TextButton(
                 child: TextThemes.subtitle("Ok", Themes.keyDark, 1),
                 onPressed: () {
-                  removeBasketFromStorage();
-                  Navigator.of(context).popUntil((_) => count++ >= (isFromHome? 2 : 3));
+                  Navigator.of(context)
+                      .popUntil((_) => count++ >= (isFromHome ? 2 : 3));
+                  getIt<BasketChangeService>().basketChangeNotifier.basketList =
+                      [];
+                  notifyListeners();
                 },
               ),
             ],
@@ -97,7 +109,14 @@ class BasketViewModel extends BaseViewModel {
           actions: [
             TextButton(
               child: TextThemes.subtitle("Yes", Themes.keyDark, 1),
-              onPressed: () => basketList!.removeAt(index),
+              onPressed: () {
+                basketList!.removeAt(index);
+                Navigator.pop(context);
+                if (basketList!.isEmpty) {
+                  total = 0;
+                }
+                notifyListeners();
+              },
             ),
             TextButton(
               child: TextThemes.subtitle("No", Themes.keyDark, 1),
@@ -109,5 +128,21 @@ class BasketViewModel extends BaseViewModel {
     );
   }
 
-  void editItem({required int index}) {}
+  int calculateTotal() {
+    int tot = 0;
+    for (var i in basketList!) {
+      if (i.basket_unitType!.price != 0) {
+        tot += i.basket_unitType!.price * i.quantity;
+      } else {
+        tot += i.price * i.quantity;
+      }
+    }
+    return tot;
+  }
+
+  void editItem(BuildContext context, {required int index}) {
+    Navigator.pushNamed(context, ItemView.routeName,
+        arguments: ItemViewArgument(
+            isFromBasket: true, itemId: basketList![index].id,quantity: basketList![index].quantity));
+  }
 }

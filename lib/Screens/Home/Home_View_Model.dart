@@ -11,6 +11,8 @@ import 'package:ecologital_assignment/Screens/Home/Home_View_Arguments.dart';
 import 'package:ecologital_assignment/Screens/Home/Widgets/Item_Search.dart';
 import 'package:ecologital_assignment/Screens/Item/Item_View_Argument.dart';
 import 'package:ecologital_assignment/Screens/Item/Item_view.dart';
+import 'package:ecologital_assignment/Screens/observables/locator.dart';
+import 'package:ecologital_assignment/Screens/observables/service/Basket_Change_Service.dart';
 import 'package:ecologital_assignment/Services/Item_Service.dart';
 import 'package:ecologital_assignment/Themes/Text_Theme.dart';
 import 'package:ecologital_assignment/Themes/Theme.dart';
@@ -35,35 +37,41 @@ class HomeViewModel extends BaseViewModel {
   int page = 1;
   BasketModel? basketModel;
   List<BasketModel>? basketList;
+  bool isMaxLoaded = false;
+  bool isPaginationLoading = false;
+  bool isAppInit = true;
 
   ScrollController get scrollController => _scrollController;
 
   initialise({required BuildContext context}) async {
     args = ModalRoute.of(context)!.settings.arguments as HoeViewArguments;
-
+    // isAppInit = false;
+    getIt<BasketChangeService>().basketChangeNotifier.isAppInitSet(isAppInit);
     if (args != null) {
       categoryList = args!.categoryList!;
       itemList = args!.itemList!;
       backupList = itemList!;
       basketList = args!.basketModel;
+      getIt<BasketChangeService>().basketChangeNotifier.basketList = basketList;
+      getIt<BasketChangeService>().basketChangeNotifier.setItemList(itemList);
     }
     _scrollController = ScrollController();
 
     _scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
-        // Future.delayed(Duration.zero).then((value) {
-        //    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-
-        // });
-        loadMore();
+        page += 1;
+        if (!isMaxLoaded) {
+          loadMore(page);
+        }
       }
     });
   }
 
   NavigateToItemView(BuildContext context, ItemModel item) {
     Navigator.pushNamed(context, ItemView.routeName,
-        arguments: ItemViewArgument(item: item,basketList: basketList));
+            arguments: ItemViewArgument(item: item, basketList: basketList))
+        .then((value) => notifyListeners());
   }
 
   Search({required BuildContext context}) {
@@ -71,6 +79,7 @@ class HomeViewModel extends BaseViewModel {
   }
 
   categorySelect(BuildContext context, int index) {
+    int catPage = 0;
     if (selectedCatIndex != null && index == selectedCatIndex && flag == 0) {
       flag = 1;
       isCatSelect = false;
@@ -89,21 +98,46 @@ class HomeViewModel extends BaseViewModel {
         }
       }
       itemList = tempItemList;
+      if (itemList!.length < 7) {
+        catPage += 1;
+        loadMore(catPage);
+      }
     }
 
     notifyListeners();
   }
 
-  loadMore() async {
-    page += 1;
+  loadMore(int page) async {
+    int pageNo = 1;
+    isPaginationLoading = true;
+    notifyListeners();
+    if (page != null) {
+      pageNo = page;
+    }
     try {
-      var items = await ItemService.getAllItems(page);
+      var items = await ItemService.getAllItems(pageNo,
+          categoryId: selectedCatIndex != null
+              ? categoryList[selectedCatIndex!].id
+              : "");
+      List<String> itemIds = [];
+      for (var j in itemList!) {
+            itemIds.add(j.id);
+          }
       if (items != null && items.isNotEmpty) {
-        itemList!.addAll(items);
+        for (var i in items) {
+          if (!itemIds.contains(i.id)) {
+              itemList!.add(i);
+            }
+        }
+      } else {
+        isMaxLoaded = true;
       }
     } catch (ex) {
       throw ex;
     }
+    isPaginationLoading = false;
+    notifyListeners();
+    getIt<BasketChangeService>().basketChangeNotifier.setItemList(itemList);
   }
 
   Future<bool> onWillPop(BuildContext context) async {
@@ -133,8 +167,9 @@ class HomeViewModel extends BaseViewModel {
   NavigateToBasket({required BuildContext context}) {
     if (basketList != null && basketList!.isNotEmpty) {
       Navigator.pushNamed(context, BasketView.routeName,
-          arguments:
-              BasketViewArgument(basketModel: basketList, isFromHome: true));
+              arguments:
+                  BasketViewArgument(basketModel: basketList, isFromHome: true))
+          .then((value) => notifyListeners());
     }
   }
 }

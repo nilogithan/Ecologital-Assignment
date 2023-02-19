@@ -1,8 +1,13 @@
+// ignore_for_file: unused_import
+
 import 'package:ecologital_assignment/Route.dart';
 import 'package:ecologital_assignment/Screens/Init/Init_View.dart';
+import 'package:ecologital_assignment/Screens/observables/locator.dart';
+import 'package:ecologital_assignment/Screens/observables/service/Basket_Change_Service.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+ setup();
   runApp(const MyApp());
 }
 
