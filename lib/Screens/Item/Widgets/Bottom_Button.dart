@@ -20,7 +20,7 @@ class BottomButton extends ViewModelWidget<ItemViewModel> {
         margin: EdgeInsets.zero,
         subTotal: subTotal,
         onTap: () {
-          model.prepairBasket(context);
+          model.addToBasket(context);
         },
       ),
     );

@@ -3,7 +3,7 @@
 import 'package:ecologital_assignment/Models/BasketModel.dart';
 
 class BasketViewArgument{
-  BasketModel? basketModel;
+  List<BasketModel>? basketModel ;
   bool isFromHome ;
 
   BasketViewArgument({this.basketModel,this.isFromHome = false});

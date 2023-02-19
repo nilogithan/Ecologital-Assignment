@@ -3,6 +3,7 @@
 class BasketModel {
     BasketModel({
         required this.id,
+        required this.basketId,
         required this.name,
         required this.image,
         required this.categoryId,
@@ -15,6 +16,7 @@ class BasketModel {
     });
 
     String id;
+    String basketId;
     String name;
     String image;
     String categoryId;
@@ -22,11 +24,12 @@ class BasketModel {
     int quantity;
     int price;
     int subTotal;
-    BasketUnitType basket_unitType;
+    BasketUnitType? basket_unitType;
     String description;
 
     factory BasketModel.fromJson(Map<String, dynamic> json) => BasketModel(
         id: json["_id"] ?? "",
+        basketId: json["basketId"] ?? "",
         name: json["name"]?? "",
         image: json["image"]?? "",
         categoryId: json["category_id"]?? "",
@@ -40,6 +43,7 @@ class BasketModel {
 
     Map<String, dynamic> toJson() => {
         "_id": id,
+        "basketId":basketId,
         "name": name,
         "image": image,
         "category_id": categoryId,
@@ -47,7 +51,7 @@ class BasketModel {
         "quantity": quantity,
         "price": price,
         "sun_total": subTotal,
-        "unit_type": basket_unitType.toJson(),
+        "unit_type": basket_unitType!.toJson(),
         "description": description,
     };
 }

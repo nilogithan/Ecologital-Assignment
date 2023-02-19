@@ -14,14 +14,19 @@ import 'package:stacked/stacked.dart';
 
 class InitViewModel extends BaseViewModel {
   initialise({required BuildContext context}) async {
+    // await Common.removeBasket();
     var caegory = await CategoryService.getAllCategory();
     var items = await ItemService.getAllItems(1);
     var basket = await Common.getBasket();
     var basketJson;
-    BasketModel? basketModel;
+    List<BasketModel> basketList = [];
     if (basket != "") {
       basketJson = jsonDecode(basket);
-      basketModel = BasketModel.fromJson(basketJson);
+      for (var item in basketJson) {
+        var res = BasketModel.fromJson(item);
+        basketList.add(res);
+      }
+      // basketModel = BasketModel.fromJson(basketJson);
     }
 
     
@@ -30,7 +35,7 @@ class InitViewModel extends BaseViewModel {
           arguments: HoeViewArguments(
               categoryList: caegory,
               itemList: items,
-              basketModel: basketModel));
+              basketModel: basketList));
     }
   }
 }

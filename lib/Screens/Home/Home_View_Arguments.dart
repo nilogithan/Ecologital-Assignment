@@ -7,7 +7,7 @@ import 'package:ecologital_assignment/Models/Item_Model.dart';
 class HoeViewArguments{
   List<CategoryModel>? categoryList;
   List<ItemModel>? itemList;
-  BasketModel? basketModel;
+  List<BasketModel>? basketModel;
 
   HoeViewArguments({this.categoryList,this.itemList,this.basketModel});
 }

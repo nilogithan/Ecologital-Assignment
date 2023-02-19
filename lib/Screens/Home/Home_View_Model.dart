@@ -34,6 +34,7 @@ class HomeViewModel extends BaseViewModel {
   bool isLoadMore = false;
   int page = 1;
   BasketModel? basketModel;
+  List<BasketModel>? basketList;
 
   ScrollController get scrollController => _scrollController;
 
@@ -44,7 +45,7 @@ class HomeViewModel extends BaseViewModel {
       categoryList = args!.categoryList!;
       itemList = args!.itemList!;
       backupList = itemList!;
-      basketModel = args!.basketModel;
+      basketList = args!.basketModel;
     }
     _scrollController = ScrollController();
 
@@ -62,7 +63,7 @@ class HomeViewModel extends BaseViewModel {
 
   NavigateToItemView(BuildContext context, ItemModel item) {
     Navigator.pushNamed(context, ItemView.routeName,
-        arguments: ItemViewArgument(item: item));
+        arguments: ItemViewArgument(item: item,basketList: basketList));
   }
 
   Search({required BuildContext context}) {
@@ -130,10 +131,10 @@ class HomeViewModel extends BaseViewModel {
   }
 
   NavigateToBasket({required BuildContext context}) {
-    if (basketModel != null) {
+    if (basketList != null && basketList!.isNotEmpty) {
       Navigator.pushNamed(context, BasketView.routeName,
           arguments:
-              BasketViewArgument(basketModel: basketModel, isFromHome: true));
+              BasketViewArgument(basketModel: basketList, isFromHome: true));
     }
   }
 }

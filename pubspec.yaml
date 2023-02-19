@@ -20,6 +20,8 @@ dependencies:
   flutter_easyrefresh: ^2.2.2
   shared_preferences: ^2.0.17
   badges: ^3.0.2
+  flutter_slidable: ^2.0.0
+  get_it: ^7.2.0
 
 dev_dependencies:
   flutter_test:

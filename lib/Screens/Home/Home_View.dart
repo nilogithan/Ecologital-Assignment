@@ -34,7 +34,7 @@ class HomeView extends StatelessWidget {
                   onTap: (() => model.NavigateToBasket(context:context)),
                   child: Padding(
                     padding: const EdgeInsets.only(right: 8.0,top: 30),
-                    child: model.basketModel != null ? Badge(
+                    child: model.basketList != null && model.basketList!.isNotEmpty ? Badge(
                       badgeContent: TextThemes.subtitle("1", Themes.keyDark, 1),
                       position: BadgePosition.topEnd(top: -8,end: 16),
                       child: SvgPicture.asset(

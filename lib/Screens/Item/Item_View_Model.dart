@@ -19,14 +19,17 @@ class ItemViewModel extends BaseViewModel {
   int itemCount = 1;
   int subTotal = 0;
   int unitPrice = 0;
-  BasketModel? basketModel ;
+  BasketModel? basketModel;
   BasketUnitType? basketUnitType;
+  List<BasketModel> basketList = [];
 
   initialise({required BuildContext context}) {
     args = ModalRoute.of(context)!.settings.arguments as ItemViewArgument;
     if (args != null) {
       item = args!.item;
-      if (item!.unitType!.isNotEmpty && item!.unitType![selectedIndex].price > item!.price) {
+      basketList = args!.basketList!;
+      if (item!.unitType!.isNotEmpty &&
+          item!.unitType![selectedIndex].price > item!.price) {
         subTotal = item!.unitType![selectedIndex].price;
       } else {
         subTotal = item!.price;
@@ -39,12 +42,12 @@ class ItemViewModel extends BaseViewModel {
     if (index != null) {
       selectedIndex = index;
     }
-    if(item!.price < item!.unitType![selectedIndex].price){
+    if (item!.price < item!.unitType![selectedIndex].price) {
       subTotal = item!.unitType![selectedIndex].price * itemCount;
       unitPrice = item!.unitType![selectedIndex].price;
-    }else{
-       subTotal = item!.price * itemCount;
-       unitPrice = item!.price;
+    } else {
+      subTotal = item!.price * itemCount;
+      unitPrice = item!.price;
     }
     notifyListeners();
   }
@@ -59,26 +62,63 @@ class ItemViewModel extends BaseViewModel {
         subTotal -= unitPrice;
       }
     }
-    
+
     notifyListeners();
   }
 
-  void prepairBasket(BuildContext context) async{
+  void prepairBasket(BuildContext context) async {
+    bool alreadyAdded = false;
+    if (item!.unitType!.isNotEmpty) {
+      basketUnitType = BasketUnitType(
+          name: item!.unitType![selectedIndex].name,
+          value: item!.unitType![selectedIndex].value,
+          price: item!.unitType![selectedIndex].price);
+          basketModel = BasketModel(
+        id: item!.id,
+        basketId: "1",
+        name: item!.name,
+        image: item!.image,
+        categoryId: item!.categoryId,
+        categotyName: item!.categotyName,
+        quantity: itemCount,
+        price: item!.price,
+        subTotal: subTotal,
+        basket_unitType: basketUnitType,
+        description: item!.description);
+    }else{
+      basketModel = BasketModel(
+        id: item!.id,
+        basketId: "1",
+        name: item!.name,
+        image: item!.image,
+        categoryId: item!.categoryId,
+        categotyName: item!.categotyName,
+        quantity: itemCount,
+        price: item!.price,
+        subTotal: subTotal,
+        basket_unitType: BasketUnitType(name: "",price: 0,value: ""),
+        description: item!.description);
+    }
 
-    basketUnitType =  BasketUnitType(name: item!.unitType![selectedIndex].name,
-     value: item!.unitType![selectedIndex].value,
-    price: item!.unitType![selectedIndex].price);
-
-    basketModel =  BasketModel(id: item!.id, name: item!.name, image: item!.image, categoryId: item!.categoryId,
-     categotyName: item!.categotyName, quantity: itemCount, price: item!.price, subTotal: subTotal,
-      basket_unitType: basketUnitType!, description: item!.description);
     
-    var data = jsonEncode(basketModel);
-    // var data1 = jsonDecode(data);
-    // BasketModel vm = BasketModel.fromJson(data1);
-    await Common.setBasket(data);
+
+    for (var item in basketList) {
+      if (item.id == basketModel!.id) {
+        alreadyAdded = true;
+        item.quantity += basketModel!.quantity;
+      }
+    }
+    if (!alreadyAdded) {
+      basketList.add(basketModel!);
+    }
+  }
+
+  addToBasket(BuildContext context) async {
+    prepairBasket(context);
+    var temp = json.encode(basketList);
+    await Common.setBasket(temp);
     // debugPrint(data1.toString());
-    Navigator.pushNamed(context, BasketView.routeName,arguments: BasketViewArgument(basketModel: basketModel));
-    
+    Navigator.pushNamed(context, BasketView.routeName,
+        arguments: BasketViewArgument(basketModel: basketList));
   }
 }
